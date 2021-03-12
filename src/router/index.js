@@ -1,37 +1,31 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import Main from "@/views/Main";
-import Login from "@/views/Login";
-import Register from "@/views/Register";
-import NotFound from "@/views/NotFound";
-
 Vue.use(VueRouter);
 
 const routes = [
   {
-    //主页
-    path: "/main",
-    name: "Main",
-    component: Main
+    path: "/",
+    name: "Home",
+    component: () => import("components/Layout"),
+    // redirect: "/LoginAndRegiser",
+    children: []
   },
   {
-    //登录页
-    path: "/login",
-    name: "Login",
-    component: Login
+    path: "/admin",
+    name: "Admin",
+    component: () => import("components/Admin/AdminLayout"),
+    children: []
   },
+  // normal login and register
   {
-    //注册页
-    path: "/register",
-    name: "Register",
-    component: Register
-    // component: Register
+    path: "/LoginAndRegister",
+    name: "LoginAndRegister",
+    component: () => import("views/LoginAndRegister")
   },
-  //404未找到
   {
     path: "*",
-    component: NotFound
+    component: () => import("views/NotFound")
   }
 ];
 
