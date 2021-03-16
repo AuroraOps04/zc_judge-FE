@@ -3,17 +3,32 @@
     <div class="forms-container">
       <div class="signin-signup">
         <form action="#" class="sign-in-form">
-          <h2 class="title">Sign in</h2>
+          <h2 class="title">{{ $t("loginAndRegister.signIn") }}</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input type="text" placeholder="Username" />
+            <input
+              type="text"
+              :placeholder="$t('loginAndRegister.account')"
+              v-model="loginForm.account"
+            />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" placeholder="Password" />
+            <input
+              type="password"
+              :placeholder="$t('loginAndRegister.password')"
+              v-model="loginForm.password"
+            />
           </div>
-          <input type="submit" value="Login" class="btn solid" />
-          <p class="social-text">Or Sign in with social platforms</p>
+          <input
+            type="submit"
+            :value="$t('loginAndRegister.signIn')"
+            class="btn solid"
+            @click="login"
+          />
+          <p class="social-text">
+            {{ $t("loginAndRegister.orSignInWithSocialPlatform") }}
+          </p>
           <div class="social-media">
             <a href="#" class="social-icon">
               <i class="iconfont icon-facebook"></i>
@@ -30,21 +45,30 @@
           </div>
         </form>
         <form action="#" class="sign-up-form">
-          <h2 class="title">Sign up</h2>
+          <h2 class="title">{{ $t("loginAndRegister.signUp") }}</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input type="text" placeholder="Username" />
+            <input type="text" :placeholder="$t('loginAndRegister.account')" />
           </div>
           <div class="input-field">
             <i class="fas fa-envelope"></i>
-            <input type="email" placeholder="Email" />
+            <input type="email" :placeholder="$t('loginAndRegister.email')" />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" placeholder="Password" />
+            <input
+              type="password"
+              :placeholder="$t('loginAndRegister.password')"
+            />
           </div>
-          <input type="submit" class="btn" value="Sign up" />
-          <p class="social-text">Or Sign up with social platforms</p>
+          <input
+            type="submit"
+            class="btn"
+            :value="$t('loginAndRegister.signUp')"
+          />
+          <p class="social-text">
+            {{ $t("loginAndRegister.orSignUPWithSocialPlatform") }}
+          </p>
           <div class="social-media">
             <a href="#" class="social-icon">
               <i class="iconfont icon-facebook"></i>
@@ -111,12 +135,172 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import {
+  checkEmail,
+  checkPhone,
+  checkStudentNo,
+  checkUsername
+} from "@/utils/validate-utils";
+
 export default {
   name: "LoginAndRegister",
   data() {
     return {
-      signUpMode: false
+      signUpMode: false,
+      loginForm: {
+        account: "",
+        password: ""
+      },
+      registerForm: {
+        account: "",
+        password: "",
+        email: ""
+      }
     };
+  },
+  methods: {
+    ...mapActions("user", {
+      doLogin: "login",
+      doRegister: "register"
+    }),
+    ...mapActions("user", ["changeProfile", "verifyAccountExists"]),
+
+    /**
+     *  user login
+     * @returns {Promise<void>}
+     */
+    async login() {
+      const rule = this.getUserRules();
+
+      const result = await this.$validator(rule, this.loginForm);
+      if (result !== true) {
+        this.$message.error(result);
+        return;
+      }
+
+      const res = await this.doLogin({
+        ...this.loginForm,
+        type: this.getAccountType(this.loginForm.account),
+        username: this.loginForm.account
+      });
+      if (res.code === 200) {
+        this.$message.success("Login success");
+        this.changeProfile(res.data);
+      } else {
+        this.$message.error(
+          "Login Failed, Please verify that account or password is incorrect"
+        );
+      }
+    },
+
+    /**
+     * user register
+     * @returns {Promise<void>}
+     */
+    async register() {
+      // validate register form
+      const rules = {
+        ...this.getUserRules(),
+        email: [
+          {
+            required: true,
+            message: "Please enter email"
+          },
+          {
+            type: "email",
+            message: "Email invalid"
+          }
+        ]
+      };
+      const result = await this.$validator(rules);
+      if (result !== true) {
+        this.$message.error(result);
+        return;
+      }
+      const account = this.registerForm.account;
+      const res = await this.verifyAccountExists({
+        account,
+        accountType: this.getAccountType(account)
+      });
+      if (res.code === 200) {
+        this.$message.error(`Account: ${account} already exists`);
+        return;
+      }
+      const registerRes = await this.doRegister({ ...this.registerForm });
+      if (registerRes.code === 200) {
+        this.$message.success("Sign up success, please sign in");
+        // go to login
+        this.signUpMode = false;
+      } else {
+        this.$message;
+      }
+    },
+
+    /**
+     * get user validate rules
+     * @returns {{password: [{message: string, required: boolean}, {min: number, max: number, message: string}], account: [{message: string, required: boolean}, {validator: function(*, *=): (boolean|*), type: string, message: string}]}}
+     */
+    getUserRules() {
+      return {
+        account: [
+          {
+            required: true,
+            message: "Please typing account"
+          },
+          {
+            type: "string",
+            validator: this.checkAccount,
+            message: "Account isn't email/phone/studentNo or account length < 6"
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: "Please typing password"
+          },
+          {
+            min: 6,
+            max: 16,
+            message: "Password length in [6, 16]"
+          }
+        ]
+      };
+    },
+
+    /**
+     * user account validator
+     * @param rule
+     * @param value
+     * @returns {boolean}
+     */
+    checkAccount(rule, value) {
+      if (checkStudentNo(value)) {
+        return true;
+      }
+      if (checkEmail(value)) {
+        return true;
+      }
+      if (checkPhone(value)) {
+        return true;
+      }
+      return !!checkUsername(value);
+    },
+
+    /**
+     * get user account type
+     * @param account
+     * @returns {string} email/phone/studentNo/username
+     */
+    getAccountType(account) {
+      return checkEmail(account)
+        ? "email"
+        : checkPhone(account)
+        ? "phone"
+        : checkStudentNo(account)
+        ? "studentNo"
+        : "username";
+    }
   }
 };
 </script>
@@ -166,7 +350,7 @@ form {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 0rem 5rem;
+  padding: 0 5rem;
   transition: all 0.2s 0.7s;
   overflow: hidden;
   grid-column: 1 / 2;

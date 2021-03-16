@@ -5,7 +5,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: "/401", component: () => import("views/NotFound/401"), hidden: true },
-  { path: "/404", component: () => import("views/NotFound/404"), hidden: true },
+  { path: "/404", component: () => import("views/NotFound"), hidden: true },
   {
     path: "/",
     name: "Home",
@@ -27,7 +27,7 @@ const routes = [
   },
   {
     path: "*",
-    component: () => import("views/NotFound/404")
+    component: () => import("views/NotFound")
   }
 ];
 
