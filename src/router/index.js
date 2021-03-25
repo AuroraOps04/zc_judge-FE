@@ -10,7 +10,6 @@ const routes = [
     path: "/",
     name: "Home",
     component: () => import("components/Layout"),
-    // redirect: "/LoginAndRegiser",
     children: []
   },
   {

@@ -48,23 +48,33 @@
           <h2 class="title">{{ $t("loginAndRegister.signUp") }}</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input type="text" :placeholder="$t('loginAndRegister.account')" />
+            <input
+              type="text"
+              :placeholder="$t('loginAndRegister.account')"
+              v-model="registerForm.account"
+            />
           </div>
           <div class="input-field">
             <i class="fas fa-envelope"></i>
-            <input type="email" :placeholder="$t('loginAndRegister.email')" />
+            <input
+              type="email"
+              :placeholder="$t('loginAndRegister.email')"
+              v-model="registerForm.email"
+            />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
             <input
               type="password"
               :placeholder="$t('loginAndRegister.password')"
+              v-model="registerForm.password"
             />
           </div>
           <input
             type="submit"
             class="btn"
             :value="$t('loginAndRegister.signUp')"
+            @click="register"
           />
           <p class="social-text">
             {{ $t("loginAndRegister.orSignUPWithSocialPlatform") }}
@@ -181,10 +191,9 @@ export default {
 
       const res = await this.doLogin({
         ...this.loginForm,
-        type: this.getAccountType(this.loginForm.account),
-        username: this.loginForm.account
+        accountType: this.getAccountType(this.loginForm.account)
       });
-      if (res.code === 200) {
+      if (res.code === 200 && res.data != null) {
         this.$message.success("Login success");
         this.changeProfile(res.data);
       } else {
@@ -213,27 +222,32 @@ export default {
           }
         ]
       };
-      const result = await this.$validator(rules);
+
+      const result = await this.$validator(rules, this.registerForm);
       if (result !== true) {
         this.$message.error(result);
         return;
       }
       const account = this.registerForm.account;
+      const accountType = this.getAccountType(account);
       const res = await this.verifyAccountExists({
         account,
-        accountType: this.getAccountType(account)
+        accountType
       });
-      if (res.code === 200) {
+      if (res.code === 200 && res.data === true) {
         this.$message.error(`Account: ${account} already exists`);
         return;
       }
-      const registerRes = await this.doRegister({ ...this.registerForm });
-      if (registerRes.code === 200) {
+      const registerRes = await this.doRegister({
+        ...this.registerForm,
+        accountType
+      });
+      if (registerRes.code === 201) {
         this.$message.success("Sign up success, please sign in");
         // go to login
         this.signUpMode = false;
       } else {
-        this.$message;
+        this.$message.error(registerRes.message);
       }
     },
 

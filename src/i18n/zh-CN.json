@@ -16,5 +16,21 @@
     "password": "密码",
     "orSignInWithSocialPlatform": "或者使用社交平台登录",
     "orSignUPWithSocialPlatform": "或者使用社交平台注册"
+  },
+  "front": {
+    "layout": {
+      "header": {
+        "title": "至诚在线评测",
+        "motto": "没有了目的，生活便郁闷无光",
+        "user-menu": {
+          "note": "笔记本",
+          "analysis": "做题分析",
+          "logout": "退出"
+        }
+      }
+    }
+  },
+  "admin": {
+
   }
 }

@@ -16,5 +16,18 @@
     "password": "Password",
     "orSignInWithSocialPlatform": "Or Sign in with social platforms",
     "orSignUPWithSocialPlatform": "Or Sign up with social platforms"
+  },
+  "front": {
+    "layout": {
+      "header": {
+        "title": "ZC Online Judge",
+        "motto": "What makes life dreary is the want of motive",
+        "user-menu": {
+          "note": "note book",
+          "analysis": "analysis",
+          "logout": "logout"
+        }
+      }
+    }
   }
 }

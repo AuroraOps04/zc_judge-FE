@@ -7,7 +7,8 @@ const state = {
 };
 
 const getters = {
-  user: state => state.profile.user || {}
+  user: state => state.profile.user || {},
+  isLogin: state => state.profile.user && state.profile.token
 };
 
 const mutations = {
@@ -19,7 +20,7 @@ const mutations = {
 
 const actions = {
   login(_, user) {
-    return Api.post("/login", { user });
+    return Api.post("/login", user);
   },
   verifyAccountExists(_, { account, accountType }) {
     return Api.get("/verifyAccountExists", { account, accountType });
@@ -28,7 +29,6 @@ const actions = {
     return Api.post("/register", user);
   },
   changeProfile({ commit }, profile) {
-    console.log(profile);
     commit(types.CHANGE_PROFILE, profile);
   }
 };
