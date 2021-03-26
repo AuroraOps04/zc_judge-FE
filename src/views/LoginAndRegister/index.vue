@@ -3,31 +3,22 @@
     <div class="forms-container">
       <div class="signin-signup">
         <form action="#" class="sign-in-form">
-          <h2 class="title">{{ $t("loginAndRegister.signIn") }}</h2>
+          <h2 class="title">登录</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input
-              type="text"
-              :placeholder="$t('loginAndRegister.account')"
-              v-model="loginForm.account"
-            />
+            <input type="text" placeholder="账号" v-model="loginForm.account" />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
             <input
               type="password"
-              :placeholder="$t('loginAndRegister.password')"
+              placeholder="密码"
               v-model="loginForm.password"
             />
           </div>
-          <input
-            type="submit"
-            :value="$t('loginAndRegister.signIn')"
-            class="btn solid"
-            @click="login"
-          />
+          <input type="submit" value="登录" class="btn solid" @click="login" />
           <p class="social-text">
-            {{ $t("loginAndRegister.orSignInWithSocialPlatform") }}
+            或者使用社交平台登录
           </p>
           <div class="social-media">
             <a href="#" class="social-icon">
@@ -45,12 +36,12 @@
           </div>
         </form>
         <form action="#" class="sign-up-form">
-          <h2 class="title">{{ $t("loginAndRegister.signUp") }}</h2>
+          <h2 class="title">注册</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
             <input
               type="text"
-              :placeholder="$t('loginAndRegister.account')"
+              placeholder="账号"
               v-model="registerForm.account"
             />
           </div>
@@ -58,7 +49,7 @@
             <i class="fas fa-envelope"></i>
             <input
               type="email"
-              :placeholder="$t('loginAndRegister.email')"
+              placeholder="邮箱"
               v-model="registerForm.email"
             />
           </div>
@@ -66,18 +57,13 @@
             <i class="fas fa-lock"></i>
             <input
               type="password"
-              :placeholder="$t('loginAndRegister.password')"
+              placeholder="密码"
               v-model="registerForm.password"
             />
           </div>
-          <input
-            type="submit"
-            class="btn"
-            :value="$t('loginAndRegister.signUp')"
-            @click="register"
-          />
+          <input type="submit" class="btn" value="注册" @click="register" />
           <p class="social-text">
-            {{ $t("loginAndRegister.orSignUPWithSocialPlatform") }}
+            或者使用社交平台注册
           </p>
           <div class="social-media">
             <a href="#" class="social-icon">

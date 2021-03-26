@@ -1,15 +1,15 @@
 <template>
   <div class="header">
     <h1 class="title" @click="$router.push({ name: 'Home' })">
-      {{ $t("front.layout.header.title") }}
+      至诚在线评测
     </h1>
     <ul class="user">
       <template v-if="!isLogin">
         <li @click="goLoginAndRegister('login')">
-          {{ $t("loginAndRegister.signIn") }}
+          登录
         </li>
         <li @click="goLoginAndRegister('register')">
-          {{ $t("loginAndRegister.signUp") }}
+          注册
         </li>
       </template>
       <template v-else>
@@ -25,15 +25,15 @@
                 <h4>{{ user.username ? user.username : "livecode" }}</h4>
               </div>
               <div class="user-menu-header-bottom">
-                {{ $t("front.layout.header.motto") }}
+                没有了目的, 生活便郁闷无光
               </div>
             </div>
             <div class="user-menu-content">
               <ul>
-                <li>{{ $t("front.layout.header.user-menu.note") }}</li>
-                <li>{{ $t("front.layout.header.user-menu.analysis") }}</li>
+                <li>笔记本</li>
+                <li>做题分析</li>
                 <li @click="logout">
-                  {{ $t("front.layout.header.user-menu.logout") }}
+                  退出
                 </li>
                 <li></li>
               </ul>

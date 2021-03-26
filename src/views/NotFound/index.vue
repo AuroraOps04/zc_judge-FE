@@ -27,20 +27,18 @@
         <div class="bullshit__oops">OPPS!</div>
         <div class="bullshit__info"></div>
         <div class="bullshit__headline">
-          {{ $t("error.notFound.message") }}......
+          特朗普说这个页面你不能进......
         </div>
-        {{ $t("error.notFound.see") }}：<a
+        详见：<a
           class="link-type"
           href="https://wallstreetcn.com"
           target="_blank"
-          >{{ $t("error.notFound.news") }}</a
+          >华尔街见闻</a
         >
         <div class="bullshit__info">
-          {{ $t("error.notFound.prompt") }}
+          请检查您输入的网址是否正确，点击以下按钮返回主页或发送错误报告
         </div>
-        <a href="/" class="bullshit__return-home">{{
-          $t("error.notFound.goHome")
-        }}</a>
+        <a href="/" class="bullshit__return-home">{{ 返回首页 }}</a>
       </div>
     </div>
   </div>
