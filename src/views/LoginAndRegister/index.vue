@@ -16,7 +16,12 @@
               v-model="loginForm.password"
             />
           </div>
-          <input type="submit" value="登录" class="btn solid" @click="login" />
+          <input
+            type="submit"
+            value="登录"
+            class="btn solid"
+            @click.prevent="login"
+          />
           <p class="social-text">
             或者使用社交平台登录
           </p>
@@ -61,7 +66,12 @@
               v-model="registerForm.password"
             />
           </div>
-          <input type="submit" class="btn" value="注册" @click="register" />
+          <input
+            type="submit"
+            class="btn"
+            value="注册"
+            @click.prevent="register"
+          />
           <p class="social-text">
             或者使用社交平台注册
           </p>
@@ -131,6 +141,7 @@
 </template>
 
 <script>
+// import Axios from "axios";
 import { mapActions } from "vuex";
 import {
   checkEmail,
@@ -160,7 +171,7 @@ export default {
       doLogin: "login",
       doRegister: "register"
     }),
-    ...mapActions("user", ["changeProfile", "verifyAccountExists"]),
+    ...mapActions("user", ["verifyAccountExists"]),
 
     /**
      *  user login
@@ -174,18 +185,22 @@ export default {
         this.$message.error(result);
         return;
       }
-
-      const res = await this.doLogin({
+      let flag = true;
+      await this.doLogin({
         ...this.loginForm,
         accountType: this.getAccountType(this.loginForm.account)
+      }).catch(err => {
+        this.$message.error(err);
+        flag = false;
       });
-      if (res.code === 200 && res.data != null) {
-        this.$message.success("Login success");
-        this.changeProfile(res.data);
+      if (!flag) {
+        return;
+      }
+      const redirect = this.$route.query.redirect;
+      if (redirect) {
+        this.$router.push({ path: redirect }).then(() => {});
       } else {
-        this.$message.error(
-          "Login Failed, Please verify that account or password is incorrect"
-        );
+        await this.$router.push({ path: "/" }).then(() => {});
       }
     },
 
@@ -224,17 +239,12 @@ export default {
         this.$message.error(`Account: ${account} already exists`);
         return;
       }
-      const registerRes = await this.doRegister({
+      await this.doRegister({
         ...this.registerForm,
         accountType
+      }).catch(err => {
+        this.$message.error(err);
       });
-      if (registerRes.code === 201) {
-        this.$message.success("Sign up success, please sign in");
-        // go to login
-        this.signUpMode = false;
-      } else {
-        this.$message.error(registerRes.message);
-      }
     },
 
     /**

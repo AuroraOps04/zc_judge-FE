@@ -13,19 +13,40 @@ module.exports = {
       .set("api", resolve("./src/api"))
       .set("views", resolve("./src/views"));
     //set第一个参数：设置的别名，第二个参数：设置的路径
+    // set svg-sprite-loader
+    config.module
+      .rule("svg")
+      .exclude.add(resolve("src/icons"))
+      .end();
+    config.module
+      .rule("icons")
+      .test(/\.svg$/)
+      .include.add(resolve("src/icons"))
+      .end()
+      .use("svg-sprite-loader")
+      .loader("svg-sprite-loader")
+      .options({
+        symbolId: "icon-[name]"
+      })
+      .end();
   },
   devServer: {
     proxy: {
       "/api": {
-        target:
-          "https://easy-mock.bookset.io/mock/604ad02b58b07d23e9d1b89a/zc-oj-api/",
-        // "http://localhost:8080/",
+        target: "https://easy-mock.bookset.io/mock/604ad02b58b07d23e9d1b89a/",
         changeOrigin: true,
         ws: true,
         pathRewrite: {
           "^/api": ""
         }
       }
+    }
+  },
+
+  pluginOptions: {
+    "style-resources-loader": {
+      preProcessor: "less",
+      patterns: [resolve("./src/styles/index.less")]
     }
   }
 };

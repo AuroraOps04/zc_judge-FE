@@ -1,23 +1,87 @@
-import Vue from "vue";
+/**
+ * Created by PanJiaChen on 16/11/18.
+ */
 
-const AsyncValidator = require("async-validator");
+/**
+ * @param {string} path
+ * @returns {Boolean}
+ */
+export function isExternal(path) {
+  return /^(https?:|mailto:|tel:)/.test(path);
+}
 
-const validator = (descriptor, data) => {
-  let result;
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function validUsername(str) {
+  const valid_map = ["admin", "editor"];
+  return valid_map.indexOf(str.trim()) >= 0;
+}
 
-  const validatorInstance = new AsyncValidator.default(descriptor);
+/**
+ * @param {string} url
+ * @returns {Boolean}
+ */
+export function validURL(url) {
+  const reg = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/;
+  return reg.test(url);
+}
 
-  validatorInstance.validate(data, { firstFields: true }, errors => {
-    result = errors ? errors[0].message : true;
-  });
-  return result;
-};
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function validLowerCase(str) {
+  const reg = /^[a-z]+$/;
+  return reg.test(str);
+}
 
-let ValidatorPlugin = {};
-ValidatorPlugin.install = vue => {
-  vue.prototype.$validator = async (rule, data) => {
-    return validator(rule, data);
-  };
-};
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function validUpperCase(str) {
+  const reg = /^[A-Z]+$/;
+  return reg.test(str);
+}
 
-Vue.use(ValidatorPlugin);
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function validAlphabets(str) {
+  const reg = /^[A-Za-z]+$/;
+  return reg.test(str);
+}
+
+/**
+ * @param {string} email
+ * @returns {Boolean}
+ */
+export function validEmail(email) {
+  const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return reg.test(email);
+}
+
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function isString(str) {
+  if (typeof str === "string" || str instanceof String) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * @param {Array} arg
+ * @returns {Boolean}
+ */
+export function isArray(arg) {
+  if (typeof Array.isArray === "undefined") {
+    return Object.prototype.toString.call(arg) === "[object Array]";
+  }
+  return Array.isArray(arg);
+}

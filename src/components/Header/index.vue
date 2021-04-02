@@ -70,7 +70,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters("user", ["isLogin", "user"])
+    ...mapGetters(["token"]),
+    isLogin() {
+      return !!this.token;
+    }
   }
 };
 </script>
